@@ -60,6 +60,7 @@ tmp/
 
 # Database file
 app.db
+test.db
 
 # Sphinx documentation
 docs/_build/
