@@ -16,10 +16,12 @@ from app import oid
 from .forms import LoginForm
 from .forms import EditForm
 from .forms import PostForm
+from .forms import SearchForm
 from .models import User
 from .models import Post
 from datetime import datetime
 from config import POSTS_PER_PAGE
+from config import MAX_SEARCH_RESULTS
 
 @lm.user_loader
 def load_user(id):
@@ -64,6 +66,7 @@ def before_request():
 		g.user.last_seen = datetime.utcnow()
 		db.session.add(g.user)
 		db.session.commit()
+		g.search_form = SearchForm()
 
 @oid.after_login
 def after_login(resp):
@@ -199,3 +202,18 @@ def internal_error(error):
 def internal_error(error):
 	db.session.rollback()
 	return render_template('500.html'), 500
+
+@app.route('/search', methods = ['POST'])
+@login_required
+def search():
+	if not g.search_form.validate_on_submit():
+		return redirect(url_for('index'))
+	return redirect(url_for('search_results', query = g.search_form.search.data))
+
+@app.route('/search_results/<query>')
+@login_required
+def search_results(query):
+	results = Post.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
+	return render_template('search_results.html',
+		query = query,
+		results = results)
