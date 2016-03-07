@@ -23,15 +23,15 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 # MAIL_PASSWORD = None
 
 
-MAIL_SERVER = 'smtp-mail.outlook.com'
-MAIL_PORT = 25
+MAIL_SERVER = 'smtp.googlemail.com'
+MAIL_PORT = 465 
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
-MAIL_USERNAME = "zj-flask@outlook.com"
+MAIL_USERNAME = "zjflask@gmail.com"
 MAIL_PASSWORD = "haha1234"
 
 # administrator list
-ADMINS = ['zj-flask@outlook.com']
+ADMINS = ['zjflask@gmail.com']
 
 # pagination
 POSTS_PER_PAGE = 3
