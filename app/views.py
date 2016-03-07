@@ -22,7 +22,7 @@ from .models import Post
 from datetime import datetime
 from config import POSTS_PER_PAGE
 from config import MAX_SEARCH_RESULTS
-from emails import follower_notification
+from .emails import follower_notification
 
 @lm.user_loader
 def load_user(id):
