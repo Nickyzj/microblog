@@ -22,6 +22,7 @@ from .models import Post
 from datetime import datetime
 from config import POSTS_PER_PAGE
 from config import MAX_SEARCH_RESULTS
+from emails import follower_notification
 
 @lm.user_loader
 def load_user(id):
@@ -127,35 +128,21 @@ def edit():
 @app.route('/follow/<nickname>')
 @login_required
 def follow(nickname):
-
 	user = User.query.filter_by(nickname=nickname).first()
-
 	if user is None:
-
 		flash('User %s not found.' % nickname)
-
 		return redirect(url_for('index'))
-
 	if user == g.user:
-
 		flash('You can\'t follow yourself!')
-
 		return redirect(url_for('user', nickname=nickname))
-
 	u = g.user.follow(user)
-
 	if u is None:
-
 		flash('Cannot follow ' + nickname + '.')
-
 		return redirect(url_for('user', nickname=nickname))
-
 	db.session.add(u)
-
 	db.session.commit()
-
 	flash('You are now following ' + nickname + '!')
-
+	follower_notification(user, g.user)
 	return redirect(url_for('user', nickname=nickname))
 
 @app.route('/unfollow/<nickname>')
@@ -163,33 +150,19 @@ def follow(nickname):
 def unfollow(nickname):
 
 	user = User.query.filter_by(nickname=nickname).first()
-
 	if user is None:
-
 		flash('User %s not found.' % nickname)
-
 		return redirect(url_for('index'))
-
 	if user == g.user:
-
 		flash('You can\'t unfollow yourself!')
-
 		return redirect(url_for('user', nickname=nickname))
-
 	u = g.user.unfollow(user)
-
 	if u is None:
-
 		flash('Cannot unfollow ' + nickname + '.')
-
 		return redirect(url_for('user', nickname=nickname))
-
 	db.session.add(u)
-
 	db.session.commit()
-
 	flash('You have stopped following ' + nickname + '.')
-
 	return redirect(url_for('user', nickname=nickname))
 
 @app.errorhandler(404)
