@@ -23,6 +23,8 @@ from datetime import datetime
 from config import POSTS_PER_PAGE
 from config import MAX_SEARCH_RESULTS
 from .emails import follower_notification
+import time
+from random import randint, uniform
 
 @lm.user_loader
 def load_user(id):
@@ -188,3 +190,9 @@ def search_results(query):
 	return render_template('search_results.html',
 		query = query,
 		results = results)
+
+@app.route('/coroutine')
+def coroutine():
+	t = uniform(1, 3)
+	time.sleep(t)
+	return 'Server slept for {:.1f} seconds.'.format(t)
